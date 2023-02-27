@@ -11,10 +11,6 @@ sumMoney = 0
 
 oilCostClass = OilCost()
 
-def toSumMoney():
-    sumMoney = oilCostClass.toSumMoney(oilType, oilNum, isDiscount)
-    print(sumMoney)
-
 root_window = tk.Tk()
 
 root_window.title('加油计费')
@@ -25,26 +21,66 @@ root_window.minsize(600, 400)
 root_window.maxsize(600, 400)
 
 top_title = oilCostClass.getOilTxt(oilType) + ':' + oilCostClass.getOilMoneyTxt(oilType)
-tk.Label(root_window, text=top_title).grid(row=3)
+tk.Label(root_window, text=top_title).grid(row=4, column=1)
 
-tk.Label(root_window, text='种类', width=10,).grid(row=6, column=2)
-tk.Label(root_window, text='数量：升', width=10,).grid(row=6, column=3)
+tk.Label(root_window, text='种类', width=10).grid(row=6, column=2)
+tk.Label(root_window, text='', width=10).grid(row=6, column=3)
+tk.Label(root_window, text='数量：升', width=10).grid(row=6, column=4)
 
 
 
-# v = tk.IntVar()
+radioMain = tk.Frame(root_window)
 
-oilTypePriceKey = list(oilTypePrice.keys())
-print(len(oilTypePriceKey))
+vRadio = tk.IntVar()
+vRadio.set(oilType)
 
-for index in len(oilTypePriceKey):
-    type = oilTypePriceKey[index]
-    txtName = oilCostClass.getOilTxt(type)
-    row = 6 + index*2
-    tk.Label(root_window, text=txtName, width=10, compound=toSumMoney).grid(row=row, column=2)
+def changeOilType():
+    global oilType, vRadio
+    oilType = vRadio.get()
+    print(oilType)
+
+for index, item in enumerate(oilTypePrice.keys()):
+    txtName = oilCostClass.getOilTxt(item)
+    row = 12 + index
+    tk.Radiobutton(root_window, text=txtName, width=10, command=changeOilType, variable=vRadio, value=item).grid(row=row, column=2)
+
+
+vCheck = tk.IntVar()
+vCheck.set(isDiscount)
+def changeIsDiscount():
+    global isDiscount
+    checkVal = vCheck.get()
+    if checkVal == 1:
+        isDiscount = True
+    else:
+        checkVal = False
+    print(isDiscount)
+
+discountName = oilCostClass.getOilDiscountTxt()
+check1 = tk.Checkbutton(root_window, text=discountName ,onvalue=1, offvalue=0, variable=vCheck, command=changeIsDiscount).grid(row=13, column=3)
+
+
+vInput1 = tk.IntVar()
+vInput2 = tk.IntVar()
+vInput1.set(oilNum)
+vInput2.set(sumMoney)
+
+def toSumMoney():
+    oilNum = int(vInput1.get())
+    sumMoney = oilCostClass.toSumMoney(oilType, oilNum, isDiscount)
+    vInput2.set(sumMoney)
+
+tk.Entry(root_window, width=10, textvariable=vInput1).grid(row=12, column=4)
+tk.Label(root_window, text='总价:', width=10).grid(row=13, column=4)
+tk.Entry(root_window, textvariable=vInput2, width=10).grid(row=14, column=4)
+
+
+
+    
 
 tk.Button(root_window, text="计算", width=10, command=toSumMoney).grid(row=20, column=2)
-tk.Button(root_window, text="退出", width=10, command=root_window.quit).grid(row=20, column=3)
+tk.Label(root_window, text='', width=10).grid(row=20, column=3)
+tk.Button(root_window, text="退出", width=10, command=root_window.quit).grid(row=20, column=4)
 
 
 root_window.mainloop()
