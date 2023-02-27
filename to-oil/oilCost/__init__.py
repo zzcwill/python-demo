@@ -24,13 +24,14 @@ class OilCost:
         return (str(int(discountNum*100)) + '折')
 
     def toSumMoney(self, oilType, oilNum, isDiscount):
+        print(oilType, oilNum, isDiscount)
         sum = 0
-        price = oilTypePrice[oilType]
-        if ~isDiscount:
+        price = oilTypePrice[str(oilType)]
+        if isDiscount == 0:
             sum = price * oilNum
 
-        if isDiscount:
-            sum = price * oilNum * isDiscount
+        if isDiscount == 1:
+            sum = price * oilNum * discountNum
 
         return sum
               
